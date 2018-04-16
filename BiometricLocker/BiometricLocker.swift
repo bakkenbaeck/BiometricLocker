@@ -93,7 +93,7 @@ public class BiometricLocker {
         UserDefaults.standard.removeObject(forKey: Key.applicationDidEnterBackgroundDate.rawValue)
     }
 
-    /// Requests that user authenticate with biometrics. Feel free to allow a fallback, like a pincode or password screen.
+    /// Requests that the user authenticate with biometrics. Feel free to allow a fallback, like a pincode or password screen.
     public func authenticateWithBiometrics() {
         var error: NSError?
         guard self.authenticationContext.canEvaluatePolicy(self.policy, error: &error) else {
@@ -105,7 +105,7 @@ public class BiometricLocker {
                 if success {
                     self.delegate?.didAuthenticateSuccessfully()
                     self.positiveFeedbackGenerator.impactOccurred()
-
+                    self.unlock()
                 } else {
                     self.negativeFeedbackGenerator.impactOccurred()
 
