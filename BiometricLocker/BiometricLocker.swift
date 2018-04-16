@@ -31,13 +31,15 @@ public class BiometricLocker {
         // Just reusing the `LAContext` can cause it to call the success completion block
         // without the user having to enter their biometric ID.
         if !self._authenticationContext.canEvaluatePolicy(self.policy, error: nil) {
-            self._authenticationContext = LAContext()
+            self._authenticationContext = self.newContext()
         }
 
         return self._authenticationContext
     }
 
-    private var _authenticationContext = LAContext()
+    private lazy var _authenticationContext: LAContext = {
+        return self.newContext()
+    }()
 
     private var defaults = UserDefaults.standard
 
@@ -55,7 +57,11 @@ public class BiometricLocker {
     /// then authentication for the receiver succeeds automatically, without prompting the user again.
     ///
     /// - Important: Values are only valid between 0 and `LATouchIDAuthenticationMaximumAllowableReuseDuration` (checked on iOS 11.2 to be 5 minutes). If it's more, it will be reveted to `LATouchIDAuthenticationMaximumAllowableReuseDuration`, and if it's negative, to 0.
-    public var biometricAuthenticationAllowableReuseDuration: TimeInterval = 0
+    public var biometricAuthenticationAllowableReuseDuration: TimeInterval = 0 {
+        didSet {
+            self.authenticationContext.touchIDAuthenticationAllowableReuseDuration = self.biometricAuthenticationAllowableReuseDuration
+        }
+    }
 
     /// Defines how long we keep the app unlocked once it's been sent to the background. Defaults to LATouchIDAuthenticationMaximumAllowableReuseDuration (checked on iOS 11.2 to be 5 minutes).
     ///
@@ -127,5 +133,12 @@ public class BiometricLocker {
             // Prevents the context from being re-used.
             self.authenticationContext.invalidate()
         }
+    }
+
+    private func newContext() -> LAContext {
+        let context = LAContext()
+        context.touchIDAuthenticationAllowableReuseDuration = self.biometricAuthenticationAllowableReuseDuration
+
+        return contextg
     }
 }
