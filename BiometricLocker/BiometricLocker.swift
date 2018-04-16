@@ -88,6 +88,7 @@ final public class BiometricLocker {
     public func lock(at date: Date = Date()) {
         // if we are already deactivated, return. Otherwise you can just kill the app and try again to bypass touch ID.
         if self.isLocked { return }
+
         self.defaults.set(date, forKey: Key.applicationDidEnterBackgroundDate.rawValue)
         self.defaults.synchronize()
     }
