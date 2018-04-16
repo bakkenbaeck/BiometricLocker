@@ -11,9 +11,12 @@ import XCTest
 
 class BiometricLockerTests: XCTestCase {
 
+    let locker = BiometricLocker()
+
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        self.locker.unlock()
     }
     
     override func tearDown() {
@@ -21,16 +24,23 @@ class BiometricLockerTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testLockUnlock() {
+        XCTAssertFalse(self.locker.isLocked)
+
+        self.locker.lock()
+        XCTAssertFalse(self.locker.isLocked)
+
+        self.locker.lock(at: Date.distantPast)
+        XCTAssertTrue(self.locker.isLocked)
+
+        self.locker.unlock()
+        XCTAssertFalse(self.locker.isLocked)
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
+
+//    func testPerformanceExample() {
+//        // This is an example of a performance test case.
+//        self.measure {
+//            // Put the code you want to measure the time of here.
+//        }
+//    }
 }
