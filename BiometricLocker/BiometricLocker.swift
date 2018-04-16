@@ -15,30 +15,31 @@ public protocol AuthenticationDelegate: class {
     func didFailAuthentication(error: LAError)
 }
 
-open class BiometricLocker {
+public class BiometricLocker {
     public enum Key: String {
-        case applicationDidEnterBackgroundDate
+        case applicationDidEnterBackgroundDate = "com.bakkenbaeck.BiometricLocker.applicationDidEnterBackgroundDate"
     }
 
-    open weak var delegate: AuthenticationDelegate?
+    public weak var delegate: AuthenticationDelegate?
 
-    open var policy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
+    public var policy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
 
-    open var localizedReason: String = ""
+    public var localizedReason: String = ""
 
-    open var authenticationContext: LAContext {
+    private var authenticationContext: LAContext {
         // Prevents re-using an `LAContext`, once it can no longer evaluate our policy.
         // Just reusing the `LAContext` can cause it to call the success completion block
         // without the user having to enter their biometric ID.
         if !self._authenticationContext.canEvaluatePolicy(self.policy, error: nil) {
-            self._authenticationContext = LAContext()
+            self._authenticationContext = self.newContext()
         }
 
         return self._authenticationContext
     }
 
-    // We do this to prevent a bug where quickly re-using a LAcontext
-    private var _authenticationContext = LAContext()
+    private lazy var _authenticationContext: LAContext = {
+        return self.newContext()
+    }()
 
     private var defaults = UserDefaults.standard
 
@@ -50,16 +51,27 @@ open class BiometricLocker {
         UIImpactFeedbackGenerator(style: .light)
     }()
 
+    /// The duration for which the biometric authentication reuse is allowable.
+    ///
+    /// If the device was successfully authenticated using biometrics within the specified time interval,
+    /// then authentication for the receiver succeeds automatically, without prompting the user again.
+    ///
+    /// - Important: Values are only valid between 0 and `LATouchIDAuthenticationMaximumAllowableReuseDuration` (checked on iOS 11.2 to be 5 minutes). If it's more, it will be reveted to `LATouchIDAuthenticationMaximumAllowableReuseDuration`, and if it's negative, to 0.
+    public var biometricAuthenticationAllowableReuseDuration: TimeInterval = 0 {
+        didSet {
+            self.authenticationContext.touchIDAuthenticationAllowableReuseDuration = self.biometricAuthenticationAllowableReuseDuration
+        }
+    }
 
-    /// Defines how long we keep the app unlocked once it's been sent to the background. Defaults to 5 minutes.
+    /// Defines how long we keep the app unlocked once it's been sent to the background. Defaults to LATouchIDAuthenticationMaximumAllowableReuseDuration (checked on iOS 11.2 to be 5 minutes).
     ///
     /// **Important**: Does not apply to apps that are killed by the user. In those cases, we always force-lock.
-    open var unlockedTimeAllowance: TimeInterval = 5 * 60 //
+    public var unlockedTimeAllowance: TimeInterval = LATouchIDAuthenticationMaximumAllowableReuseDuration
 
     /// **True** if the app has been in the background for more than our `unlockedTimeAllowace`, or killed by the user.
     ///
     /// **False** otherwise.
-    var isLocked: Bool {
+    public var isLocked: Bool {
         if let applicationDidEnterBackgroundDate = self.defaults.value(forKey: Key.applicationDidEnterBackgroundDate.rawValue) as? Date {
 
             let appWasInBackgroundForLongerThan5Minutes = Date().timeIntervalSince(applicationDidEnterBackgroundDate) > self.unlockedTimeAllowance
@@ -73,7 +85,7 @@ open class BiometricLocker {
     /// Locks the app.
     ///
     /// - Parameter date: Tells the locker when the app was sent to the background (or any other situation, when applicable), so that we can calculate if the app should be locked.
-    open func lock(at date: Date = Date()) {
+    public func lock(at date: Date = Date()) {
         // if we are already deactivated, return. Otherwise you can just kill the app and try again to bypass touch ID.
         if self.isLocked { return }
         self.defaults.set(date, forKey: Key.applicationDidEnterBackgroundDate.rawValue)
@@ -83,12 +95,12 @@ open class BiometricLocker {
     /// Unlocks the app.
     ///
     /// Call it from the `AuthenticationDelegate`'s `didAuthenticateSuccessfully` method, or if the user session was destroyed. (No sense in locking the app if the user logs out).
-    open func unlock() {
+    public func unlock() {
         UserDefaults.standard.removeObject(forKey: Key.applicationDidEnterBackgroundDate.rawValue)
     }
 
-    /// Requests that user authenticate with biometrics. Feel free to allow a fallback, like a pincode or password screen.
-    open func authenticateWithBiometrics() {
+    /// Requests that the user authenticate with biometrics. Feel free to allow a fallback, like a pincode or password screen.
+    public func authenticateWithBiometrics() {
         var error: NSError?
         guard self.authenticationContext.canEvaluatePolicy(self.policy, error: &error) else {
             return
@@ -99,7 +111,7 @@ open class BiometricLocker {
                 if success {
                     self.delegate?.didAuthenticateSuccessfully()
                     self.positiveFeedbackGenerator.impactOccurred()
-
+                    self.unlock()
                 } else {
                     self.negativeFeedbackGenerator.impactOccurred()
 
@@ -120,5 +132,12 @@ open class BiometricLocker {
             // Prevents the context from being re-used.
             self.authenticationContext.invalidate()
         }
+    }
+
+    private func newContext() -> LAContext {
+        let context = LAContext()
+        context.touchIDAuthenticationAllowableReuseDuration = self.biometricAuthenticationAllowableReuseDuration
+
+        return contextg
     }
 }

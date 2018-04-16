@@ -9,13 +9,28 @@
 /* Begin PBXBuildFile section */
 		9FAE072220849AF70018B8E8 /* BiometricLocker.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FAE072020849AF70018B8E8 /* BiometricLocker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9FAE072920849B0A0018B8E8 /* BiometricLocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAE072820849B0A0018B8E8 /* BiometricLocker.swift */; };
+		9FAE07312084A4E80018B8E8 /* BiometricLockerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAE07302084A4E80018B8E8 /* BiometricLockerTests.swift */; };
+		9FAE07332084A4E80018B8E8 /* BiometricLocker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAE071D20849AF70018B8E8 /* BiometricLocker.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9FAE07342084A4E80018B8E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9FAE071420849AF70018B8E8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9FAE071C20849AF70018B8E8;
+			remoteInfo = BiometricLocker;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		9FAE071D20849AF70018B8E8 /* BiometricLocker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BiometricLocker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FAE072020849AF70018B8E8 /* BiometricLocker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiometricLocker.h; sourceTree = "<group>"; };
 		9FAE072120849AF70018B8E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9FAE072820849B0A0018B8E8 /* BiometricLocker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricLocker.swift; sourceTree = "<group>"; };
+		9FAE072E2084A4E80018B8E8 /* BiometricLockerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BiometricLockerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FAE07302084A4E80018B8E8 /* BiometricLockerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricLockerTests.swift; sourceTree = "<group>"; };
+		9FAE07322084A4E80018B8E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,6 +41,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9FAE072B2084A4E80018B8E8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9FAE07332084A4E80018B8E8 /* BiometricLocker.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				9FAE071F20849AF70018B8E8 /* BiometricLocker */,
+				9FAE072F2084A4E80018B8E8 /* BiometricLockerTests */,
 				9FAE071E20849AF70018B8E8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				9FAE071D20849AF70018B8E8 /* BiometricLocker.framework */,
+				9FAE072E2084A4E80018B8E8 /* BiometricLockerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,6 +78,15 @@
 				9FAE072820849B0A0018B8E8 /* BiometricLocker.swift */,
 			);
 			path = BiometricLocker;
+			sourceTree = "<group>";
+		};
+		9FAE072F2084A4E80018B8E8 /* BiometricLockerTests */ = {
+			isa = PBXGroup;
+			children = (
+				9FAE07302084A4E80018B8E8 /* BiometricLockerTests.swift */,
+				9FAE07322084A4E80018B8E8 /* Info.plist */,
+			);
+			path = BiometricLockerTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -87,18 +121,41 @@
 			productReference = 9FAE071D20849AF70018B8E8 /* BiometricLocker.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		9FAE072D2084A4E80018B8E8 /* BiometricLockerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9FAE07362084A4E80018B8E8 /* Build configuration list for PBXNativeTarget "BiometricLockerTests" */;
+			buildPhases = (
+				9FAE072A2084A4E80018B8E8 /* Sources */,
+				9FAE072B2084A4E80018B8E8 /* Frameworks */,
+				9FAE072C2084A4E80018B8E8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9FAE07352084A4E80018B8E8 /* PBXTargetDependency */,
+			);
+			name = BiometricLockerTests;
+			productName = BiometricLockerTests;
+			productReference = 9FAE072E2084A4E80018B8E8 /* BiometricLockerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		9FAE071420849AF70018B8E8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0920;
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Bakken&Bæck";
 				TargetAttributes = {
 					9FAE071C20849AF70018B8E8 = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 0920;
+						ProvisioningStyle = Automatic;
+					};
+					9FAE072D2084A4E80018B8E8 = {
+						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -116,12 +173,20 @@
 			projectRoot = "";
 			targets = (
 				9FAE071C20849AF70018B8E8 /* BiometricLocker */,
+				9FAE072D2084A4E80018B8E8 /* BiometricLockerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9FAE071B20849AF70018B8E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9FAE072C2084A4E80018B8E8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -139,7 +204,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9FAE072A2084A4E80018B8E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9FAE07312084A4E80018B8E8 /* BiometricLockerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9FAE07352084A4E80018B8E8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9FAE071C20849AF70018B8E8 /* BiometricLocker */;
+			targetProxy = 9FAE07342084A4E80018B8E8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9FAE072320849AF70018B8E8 /* Debug */ = {
@@ -300,6 +381,34 @@
 			};
 			name = Release;
 		};
+		9FAE07372084A4E80018B8E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 29X3GG489T;
+				INFOPLIST_FILE = BiometricLockerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.BiometricLockerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9FAE07382084A4E80018B8E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 29X3GG489T;
+				INFOPLIST_FILE = BiometricLockerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.BiometricLockerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -317,6 +426,15 @@
 			buildConfigurations = (
 				9FAE072620849AF70018B8E8 /* Debug */,
 				9FAE072720849AF70018B8E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9FAE07362084A4E80018B8E8 /* Build configuration list for PBXNativeTarget "BiometricLockerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9FAE07372084A4E80018B8E8 /* Debug */,
+				9FAE07382084A4E80018B8E8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
