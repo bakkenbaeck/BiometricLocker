@@ -17,7 +17,7 @@ public protocol AuthenticationDelegate: class {
 
 public class BiometricLocker {
     public enum Key: String {
-        case applicationDidEnterBackgroundDate
+        case applicationDidEnterBackgroundDate = "com.bakkenbaeck.BiometricLocker.applicationDidEnterBackgroundDate"
     }
 
     public weak var delegate: AuthenticationDelegate?
@@ -59,7 +59,7 @@ public class BiometricLocker {
     /// **True** if the app has been in the background for more than our `unlockedTimeAllowace`, or killed by the user.
     ///
     /// **False** otherwise.
-    var isLocked: Bool {
+    public var isLocked: Bool {
         if let applicationDidEnterBackgroundDate = self.defaults.value(forKey: Key.applicationDidEnterBackgroundDate.rawValue) as? Date {
 
             let appWasInBackgroundForLongerThan5Minutes = Date().timeIntervalSince(applicationDidEnterBackgroundDate) > self.unlockedTimeAllowance
