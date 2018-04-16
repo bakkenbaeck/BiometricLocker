@@ -16,14 +16,27 @@ public protocol AuthenticationDelegate: class {
 }
 
 final public class BiometricLocker {
-    public enum Key: String {
+    public enum When {
+        case now
+        case afterTimeAllowance
+        case afterTimeInterval(TimeInterval)
+    }
+
+    private enum Key: String {
         case applicationDidEnterBackgroundDate = "com.bakkenbaeck.BiometricLocker.applicationDidEnterBackgroundDate"
     }
 
     public weak var delegate: AuthenticationDelegate?
 
+    /**
+     Define which policy we have for the device owner to be authenticated using a biometric method (Touch ID or Face ID).
+     Defaults to `deviceOwnerAuthenticationWithBiometrics`.
+
+     See [LocalAuthentication](apple-reference-documentation://cslocalauthentication) for a more detailed explanation.
+     */
     public var policy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
 
+    /// The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user.
     public var localizedReason: String = ""
 
     private var authenticationContext: LAContext {
@@ -41,13 +54,8 @@ final public class BiometricLocker {
 
     private var defaults = UserDefaults.standard
 
-    private lazy var negativeFeedbackGenerator: UIImpactFeedbackGenerator = {
-        UIImpactFeedbackGenerator(style: .heavy)
-    }()
-
-    private lazy var positiveFeedbackGenerator: UIImpactFeedbackGenerator = {
-        UIImpactFeedbackGenerator(style: .light)
-    }()
+    private let negativeFeedbackGenerator = UIImpactFeedbackGenerator(style: .heavy)
+    private let positiveFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
     /// The duration for which the biometric authentication reuse is allowable.
     ///
@@ -61,9 +69,10 @@ final public class BiometricLocker {
         }
     }
 
-    /// Defines how long we keep the app unlocked once it's been sent to the background. Defaults to LATouchIDAuthenticationMaximumAllowableReuseDuration (checked on iOS 11.2 to be 5 minutes).
+    /// Defines how long we keep the app unlocked once it's been sent to the background.
+    /// Defaults to LATouchIDAuthenticationMaximumAllowableReuseDuration (checked on iOS 11.2 to be 5 minutes).
     ///
-    /// **Important**: Does not apply to apps that are killed by the user. In those cases, we always force-lock.
+    /// **Important**: Does not apply to apps that are killed by the user. In those cases, we should always force-lock.
     public var unlockedTimeAllowance: TimeInterval = LATouchIDAuthenticationMaximumAllowableReuseDuration
 
     /// **True** if the app has been in the background for more than our `unlockedTimeAllowace`, or killed by the user.
@@ -80,15 +89,33 @@ final public class BiometricLocker {
         return false
     }
 
-    public enum When {
-        case now
-        case afterTimeAllowance
-        case afterTimeInterval(TimeInterval)
+    /// Store the NotificationCenter observers for deallocation.
+    private var notificationObservers = [NSObjectProtocol]()
+
+    public init() {
+        self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) { _ in
+            // If app goes into background, we start the clocks to lock the app.
+            self.lock()
+        })
+
+        self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationWillTerminate, object: nil, queue: .main) { _ in
+            // If the app is killed, lock it instantly.
+            self.lock(.now)
+        })
     }
 
-    /// Locks the app.
-    ///
-    /// - Parameter date: Tells the locker when the app was sent to the background (or any other situation, when applicable), so that we can calculate if the app should be locked.
+    deinit {
+        self.notificationObservers.forEach { observer in
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+
+    /**
+     Tells the biometric locker to lock the app. Defaults to the currently defined time allowance (5min by default).
+
+     - Important: To change when the app locks after having called this, simply call `lock` again with a different allowance, or tell the app to `lock(.afterTimeInterval(timeInterval)`, as it supercedes the current unlocked time allowance. `unlockedTimeAllowance` is only checked when we ask the BiometricLocker whether the app is locked or not. Changing it before or after calling `lock` should work just fine.
+     - Parameter when: An enum defining when the app should lock. Now, after the time allowance, or after a custom time interval.
+     */
     public func lock(_ when: When = .afterTimeAllowance) {
         // if we are already deactivated, return. Otherwise you can just kill the app and try again to bypass touch ID.
         if self.isLocked { return }
@@ -100,7 +127,7 @@ final public class BiometricLocker {
         case .afterTimeAllowance:
             date = Date()
         case .afterTimeInterval(let interval):
-            date = Date().addingTimeInterval(interval - self.unlockedTimeAllowance)
+            date = Date(timeIntervalSinceNow: (interval - self.unlockedTimeAllowance))
         }
 
         self.defaults.set(date, forKey: Key.applicationDidEnterBackgroundDate.rawValue)
