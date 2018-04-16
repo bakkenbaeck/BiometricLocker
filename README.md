@@ -4,12 +4,17 @@
 Here's a simple example implementation through the AppDelegate.
 
 ```swift
+import BiometricLocker
 
 @UIApplicationMain class AppDelegate: UIResponder, UIApplicationDelegate {
+  var biometricLocker = BiometricLocker()
+  
   func application(_ application: UIApplication, didFinishLaunchingWithOptions options: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-
     self.lockAppIfNeeded()
-
+    
+    ///…
+    
+    return true
   }
 
   func applicationDidEnterBackground(_ application: UIApplication) {
@@ -29,15 +34,16 @@ Here's a simple example implementation through the AppDelegate.
     }
 
     DispatchQueue.global(qos: .default).async {
-      Session.current?.deactivate(Date.distantPast)
+      // Ensures the app is locked, regardless of our timeout allowance.
+      self.biometricLocker.deactivate(Date.distantPast)
 
       application.endBackgroundTask(backgroundTask)
       backgroundTask = UIBackgroundTaskInvalid
     }
   }
-		
+	
   private func lockAppIfNeeded() {
-    if session.isBackgroundLocked {
+    if self.biometricLocker.isBackgroundLocked {
       UIView.transition(with: self.window!, duration: 0.5, options: .transitionFlipFromRight, animations: {
         let authenticationController = AuthenticationController()
         authenticationController.delegate = self
