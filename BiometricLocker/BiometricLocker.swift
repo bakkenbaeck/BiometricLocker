@@ -26,7 +26,7 @@ public class BiometricLocker {
 
     public var localizedReason: String = ""
 
-    public var authenticationContext: LAContext {
+    private var authenticationContext: LAContext {
         // Prevents re-using an `LAContext`, once it can no longer evaluate our policy.
         // Just reusing the `LAContext` can cause it to call the success completion block
         // without the user having to enter their biometric ID.
