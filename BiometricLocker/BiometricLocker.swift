@@ -109,24 +109,26 @@ final public class BiometricLocker {
         }
 
         self.authenticationContext.evaluatePolicy(self.policy, localizedReason: self.localizedReason) { success, error in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                
                 if success {
-                    self.delegate?.didAuthenticateSuccessfully()
-                    self.positiveFeedbackGenerator.impactOccurred()
-                    self.unlock()
+                    strongSelf.delegate?.didAuthenticateSuccessfully()
+                    strongSelf.positiveFeedbackGenerator.impactOccurred()
+                    strongSelf.unlock()
                 } else {
-                    self.negativeFeedbackGenerator.impactOccurred()
+                    strongSelf.negativeFeedbackGenerator.impactOccurred()
 
                     // This should not actually fail. Not sure why the API doesn't simply return it as an `LAError` directly.
                     guard let error = (error as? LocalAuthentication.LAError) else { return }
                     switch error.code {
                     case .userFallback:
-                        self.delegate?.didRequestFallbackAuthentication()
+                        strongSelf.delegate?.didRequestFallbackAuthentication()
                     case .userCancel:
                         // User manually cancelled the biometric check.
                         break
                     default:
-                        self.delegate?.didFailAuthentication(error: error)
+                        strongSelf.delegate?.didFailAuthentication(error: error)
                     }
                 }
             }
