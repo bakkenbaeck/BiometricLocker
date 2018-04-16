@@ -15,7 +15,7 @@ public protocol AuthenticationDelegate: class {
     func didFailAuthentication(error: LAError)
 }
 
-public class BiometricLocker {
+final public class BiometricLocker {
     public enum Key: String {
         case applicationDidEnterBackgroundDate = "com.bakkenbaeck.BiometricLocker.applicationDidEnterBackgroundDate"
     }
@@ -139,6 +139,6 @@ public class BiometricLocker {
         let context = LAContext()
         context.touchIDAuthenticationAllowableReuseDuration = self.biometricAuthenticationAllowableReuseDuration
 
-        return contextg
+        return context
     }
 }
