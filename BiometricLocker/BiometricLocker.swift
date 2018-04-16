@@ -37,7 +37,6 @@ public class BiometricLocker {
         return self._authenticationContext
     }
 
-    // We do this to prevent a bug where quickly re-using a LAcontext
     private var _authenticationContext = LAContext()
 
     private var defaults = UserDefaults.standard
@@ -50,11 +49,18 @@ public class BiometricLocker {
         UIImpactFeedbackGenerator(style: .light)
     }()
 
+    /// The duration for which the biometric authentication reuse is allowable.
+    ///
+    /// If the device was successfully authenticated using biometrics within the specified time interval,
+    /// then authentication for the receiver succeeds automatically, without prompting the user again.
+    ///
+    /// - Important: Values are only valid between 0 and `LATouchIDAuthenticationMaximumAllowableReuseDuration` (checked on iOS 11.2 to be 5 minutes). If it's more, it will be reveted to `LATouchIDAuthenticationMaximumAllowableReuseDuration`, and if it's negative, to 0.
+    public var biometricAuthenticationAllowableReuseDuration: TimeInterval = 0
 
-    /// Defines how long we keep the app unlocked once it's been sent to the background. Defaults to 5 minutes.
+    /// Defines how long we keep the app unlocked once it's been sent to the background. Defaults to LATouchIDAuthenticationMaximumAllowableReuseDuration (checked on iOS 11.2 to be 5 minutes).
     ///
     /// **Important**: Does not apply to apps that are killed by the user. In those cases, we always force-lock.
-    public var unlockedTimeAllowance: TimeInterval = 5 * 60 //
+    public var unlockedTimeAllowance: TimeInterval = LATouchIDAuthenticationMaximumAllowableReuseDuration
 
     /// **True** if the app has been in the background for more than our `unlockedTimeAllowace`, or killed by the user.
     ///
