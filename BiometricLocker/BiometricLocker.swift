@@ -37,9 +37,7 @@ final public class BiometricLocker {
         return self._authenticationContext
     }
 
-    private lazy var _authenticationContext: LAContext = {
-        return self.newContext()
-    }()
+    private var _authenticationContext = LAContext()
 
     private var defaults = UserDefaults.standard
 
@@ -82,12 +80,28 @@ final public class BiometricLocker {
         return false
     }
 
+    public enum When {
+        case now
+        case afterTimeAllowance
+        case afterTimeInterval(TimeInterval)
+    }
+
     /// Locks the app.
     ///
     /// - Parameter date: Tells the locker when the app was sent to the background (or any other situation, when applicable), so that we can calculate if the app should be locked.
-    public func lock(at date: Date = Date()) {
+    public func lock(_ when: When = .afterTimeAllowance) {
         // if we are already deactivated, return. Otherwise you can just kill the app and try again to bypass touch ID.
         if self.isLocked { return }
+
+        let date: Date
+        switch when {
+        case .now:
+            date = Date.distantPast
+        case .afterTimeAllowance:
+            date = Date()
+        case .afterTimeInterval(let interval):
+            date = Date().addingTimeInterval(interval - self.unlockedTimeAllowance)
+        }
 
         self.defaults.set(date, forKey: Key.applicationDidEnterBackgroundDate.rawValue)
         self.defaults.synchronize()
@@ -110,7 +124,7 @@ final public class BiometricLocker {
         self.authenticationContext.evaluatePolicy(self.policy, localizedReason: self.localizedReason) { success, error in
             DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
-                
+
                 if success {
                     strongSelf.delegate?.didAuthenticateSuccessfully()
                     strongSelf.positiveFeedbackGenerator.impactOccurred()
