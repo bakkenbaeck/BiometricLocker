@@ -69,7 +69,7 @@ final public class BiometricLocker {
     /// If the device was successfully authenticated using biometrics within the specified time interval,
     /// then authentication for the receiver succeeds automatically, without prompting the user again.
     ///
-    /// - Important: Values are only valid between 0 and `LATouchIDAuthenticationMaximumAllowableReuseDuration` (checked on iOS 11.2 to be 5 minutes). If it's more, it will be reveted to `LATouchIDAuthenticationMaximumAllowableReuseDuration`, and if it's negative, to 0.
+    /// - Important: Values are only valid between 0 and `LATouchIDAuthenticationMaximumAllowableReuseDuration` (checked on iOS 11.2 to be 5 minutes). If it's more, it will be reveterd to `LATouchIDAuthenticationMaximumAllowableReuseDuration`, and if it's negative, to 0.
     public var biometricAuthenticationAllowableReuseDuration: TimeInterval = 0 {
         didSet {
             self.authenticationContext.touchIDAuthenticationAllowableReuseDuration = self.biometricAuthenticationAllowableReuseDuration
@@ -106,7 +106,7 @@ final public class BiometricLocker {
         if !withUnlockedTimeAllowance {
             self.unlockedTimeAllowance = 0
         }
-        
+
         if automaticallyLocksOnBackgroundOrQuit {
             self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) { _ in
                 // If app goes into background, we start the clocks to lock the app.
