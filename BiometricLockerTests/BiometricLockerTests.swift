@@ -20,14 +20,23 @@ class BiometricLockerTests: XCTestCase {
         self.locker.unlockedTimeAllowance = LATouchIDAuthenticationMaximumAllowableReuseDuration
     }
     
-    override func tearDown() {
-        super.tearDown()
-    }
-    
     func testLockUnlock() {
+        let expectation = self.expectation(description: "Locking")
         XCTAssertFalse(self.locker.isLocked)
 
+        self.locker.unlockedTimeAllowance = 3
         self.locker.lock()
+        XCTAssertFalse(self.locker.isLocked)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            XCTAssertTrue(self.locker.isLocked)
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 5)
+    }
+
+    func testLockUnlockImmediatelly() {
         XCTAssertFalse(self.locker.isLocked)
 
         self.locker.lock(.now)
