@@ -102,16 +102,22 @@ final public class BiometricLocker {
     /// Store the NotificationCenter observers for deallocation.
     private var notificationObservers = [NSObjectProtocol]()
 
-    public init() {
-        self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) { _ in
-            // If app goes into background, we start the clocks to lock the app.
-            self.lock()
-        })
+    public init(automaticallyLocksOnBackgroundOrQuit: Bool = true, withUnlockedTimeAllowance: Bool = true) {
+        if !withUnlockedTimeAllowance {
+            self.unlockedTimeAllowance = 0
+        }
+        
+        if automaticallyLocksOnBackgroundOrQuit {
+            self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) { _ in
+                // If app goes into background, we start the clocks to lock the app.
+                self.lock()
+            })
 
-        self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationWillTerminate, object: nil, queue: .main) { _ in
-            // If the app is killed, lock it instantly.
-            self.lock(.now)
-        })
+            self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationWillTerminate, object: nil, queue: .main) { _ in
+                // If the app is killed, lock it instantly.
+                self.lock(.now)
+            })
+        }
     }
 
     deinit {
