@@ -81,9 +81,7 @@ final public class BiometricLocker {
     ///
     /// *Does not apply to apps that are killed by the user. In those cases, we always force-lock.*
     ///
-    /// - Important: Due to the way `BiometricLocker` works, this value is checked against the time at which we set the app as `locked`. So even if `isLocked` returns true, we can have it return false by increasing the value of `unlockedTimeAllowance`, and vice-versa.
-    ///
-    public var unlockedTimeAllowance: TimeInterval = LATouchIDAuthenticationMaximumAllowableReuseDuration
+    public private(set) var unlockedTimeAllowance: TimeInterval
 
     /// **True** if the app has been in the background for more than our `unlockedTimeAllowace`, or killed by the user.
     ///
@@ -102,12 +100,10 @@ final public class BiometricLocker {
     /// Store the NotificationCenter observers for deallocation.
     private var notificationObservers = [NSObjectProtocol]()
 
-    public init(localizedReason: String, automaticallyLocksOnBackgroundOrQuit: Bool = true, withUnlockedTimeAllowance: Bool = true) {
+    public init(localizedReason: String, automaticallyLocksOnBackgroundOrQuit: Bool = true, withUnlockedTimeAllowance timeAllowance: TimeInterval = LATouchIDAuthenticationMaximumAllowableReuseDuration) {
         self.localizedReason = localizedReason
         
-        if !withUnlockedTimeAllowance {
-            self.unlockedTimeAllowance = 0
-        }
+        self.unlockedTimeAllowance = timeAllowance
 
         if automaticallyLocksOnBackgroundOrQuit {
             self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) { _ in
@@ -132,8 +128,7 @@ final public class BiometricLocker {
      Tells the biometric locker to lock the app. Defaults to the currently defined time allowance (5min by default).
 
      - Important: To change when the app locks after having called this, simply call `lock` again with a different allowance, or tell the app to `lock(.afterTimeInterval(timeInterval)`, as it supercedes the current unlocked time allowance. `unlockedTimeAllowance` is only checked when we ask the BiometricLocker whether the app is locked or not. Changing it before or after calling `lock` should work just fine.
-     - Important:  Keep in mind that changing `unlockedTimeAllowance` after setting a custom time interval will not work as expected.
-     - Parameter when: An enum defining when the app should lock. Now, after the time allowance, or after a custom time interval. Keep in mind
+     - Parameter when: An enum defining when the app should lock. Now, after the time allowance, or after a custom time interval.
      */
     public func lock(_ when: LockingTime = .afterTimeAllowance) {
         // if we are already deactivated, return. Otherwise you can just kill the app and try again to bypass touch ID.
