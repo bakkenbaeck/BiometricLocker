@@ -43,7 +43,7 @@ final public class BiometricLocker {
     public var policy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
 
     /// The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user.
-    public var localizedReason: String = ""
+    public var localizedReason: String
 
     private var authenticationContext: LAContext {
         // Prevents re-using an `LAContext`, once it can no longer evaluate our policy.
@@ -102,7 +102,9 @@ final public class BiometricLocker {
     /// Store the NotificationCenter observers for deallocation.
     private var notificationObservers = [NSObjectProtocol]()
 
-    public init(automaticallyLocksOnBackgroundOrQuit: Bool = true, withUnlockedTimeAllowance: Bool = true) {
+    public init(localizedReason: String, automaticallyLocksOnBackgroundOrQuit: Bool = true, withUnlockedTimeAllowance: Bool = true) {
+        self.localizedReason = localizedReason
+        
         if !withUnlockedTimeAllowance {
             self.unlockedTimeAllowance = 0
         }

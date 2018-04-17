@@ -12,7 +12,7 @@ import LocalAuthentication
 
 class BiometricLockerTests: XCTestCase {
 
-    let locker = BiometricLocker()
+    let locker = BiometricLocker(localizedReason: "")
 
     override func setUp() {
         super.setUp()
