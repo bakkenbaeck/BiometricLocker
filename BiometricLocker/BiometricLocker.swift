@@ -129,7 +129,6 @@ final public class BiometricLocker {
     /**
      Tells the biometric locker to lock the app. Defaults to the currently defined time allowance (5min by default).
 
-     - Important: To change when the app locks after having called this, simply call `lock` again with a different allowance, or tell the app to `lock(.afterTimeInterval(timeInterval)`, as it supersedes the current unlocked time allowance. `unlockedTimeAllowance` is only checked when we ask the BiometricLocker whether the app is locked or not. Changing it before or after calling `lock` should work just fine.
      - Parameter when: An enum defining when the app should lock. Now, after the time allowance, or after a custom time interval.
      */
     public func lock(_ when: LockingTime = .afterTimeAllowance) {
@@ -143,6 +142,9 @@ final public class BiometricLocker {
         case .afterTimeAllowance:
             date = Date()
         case .afterTimeInterval(let interval):
+            // We subtract our `unlockedTimeAllowance` here, to offset when checking again
+            // inside `isLocked`, otherwise it would be up to the user to know how we implement this internally
+            // and manually calculate the time difference. 
             date = Date(timeIntervalSinceNow: (interval - self.unlockedTimeAllowance))
         }
 
