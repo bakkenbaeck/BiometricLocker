@@ -71,6 +71,29 @@ class BiometricLockerTests: XCTestCase {
         self.wait(for: [expectation], timeout: 8)
     }
 
+    func testLockingAfterCustomIntervalShorterThanTimeAllowance() {
+        let locker = BiometricLocker(localizedReason: "", withUnlockedTimeAllowance: 3)
+        XCTAssertFalse(locker.isLocked)
+        let expectation = self.expectation(description: "Custom time lock shorter than time allowance")
+
+        locker.lock(.afterTimeInterval(5))
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            // despite our time allowance being only 3, it should still be unlocked,
+            // as we've defined a custom time interval when locking.
+            XCTAssertFalse(locker.isLocked)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                // After a total of 6s, the locker should be locked, according to our custom time interval.
+                XCTAssertTrue(locker.isLocked)
+
+                expectation.fulfill()
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 7)
+    }
+
     func testLockingAfterCustomInterval() {
         let locker = BiometricLocker(localizedReason: "")
         XCTAssertFalse(locker.isLocked)
