@@ -152,7 +152,7 @@ final public class BiometricLocker {
 
     /// Unlocks the app.
     ///
-    /// - Important: Should be called if the user session is detroyed, if your app has them, otherwise you risk having the app locked whislt there's no user, preventing people from logging in / signing up.
+    /// - Important: Should be called if the user session is destroyed, if your app has them, otherwise you risk having the app locked whilst there's no user, preventing people from logging in / signing up.
     public func unlock() {
         UserDefaults.standard.removeObject(forKey: Key.applicationDidEnterBackgroundDate.rawValue)
     }
