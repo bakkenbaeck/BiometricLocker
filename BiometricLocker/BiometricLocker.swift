@@ -57,7 +57,9 @@ final public class BiometricLocker {
     }
 
     /// Should be set to `self.newContext()`, to ensure we're using the correct configurations.
-    private var _authenticationContext = LAContext()
+    private lazy var _authenticationContext: LAContext = {
+        return self.newContext()
+    }()
 
     private var defaults = UserDefaults.standard
 
