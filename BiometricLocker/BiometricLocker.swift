@@ -20,7 +20,7 @@ final public class BiometricLocker {
     ///
     /// - now: sets the app as locked immediatelly.
     /// - afterTimeAllowance: sets the app as locked after the `unlockedTimeAllowace` interval at checking time.
-    /// - afterTimeInterval: sets the app as locked after the given time interval at checking time.
+    /// - afterTimeInterval(TimeInterval): sets the app as locked after the given time interval.
     public enum LockingTime {
         case now
         case afterTimeAllowance
@@ -150,7 +150,7 @@ final public class BiometricLocker {
 
     /// Unlocks the app.
     ///
-    /// - Important: Should be called if the user session is detroyed, if your app has them, otherwise you risk having the app locked whislt there's no user, preventing people from loging in / signing up.
+    /// - Important: Should be called if the user session is detroyed, if your app has them, otherwise you risk having the app locked whislt there's no user, preventing people from logging in / signing up.
     public func unlock() {
         UserDefaults.standard.removeObject(forKey: Key.applicationDidEnterBackgroundDate.rawValue)
     }
