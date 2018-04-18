@@ -63,12 +63,12 @@ class BiometricLockerTests: XCTestCase {
         otherLocker.lock(.afterTimeAllowance)
         XCTAssertFalse(otherLocker.isLocked)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
             XCTAssertTrue(otherLocker.isLocked)
             expectation.fulfill()
         }
 
-        self.wait(for: [expectation], timeout: 8)
+        self.wait(for: [expectation], timeout: 5)
     }
 
     func testLockingAfterCustomIntervalShorterThanTimeAllowance() {
