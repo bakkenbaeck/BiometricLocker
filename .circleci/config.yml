@@ -16,5 +16,5 @@ jobs:
       # Build the app and run tests
       - run:
           name: Build and run tests
-          command: set -o pipefail && xcodebuild clean build test -project BiometricLocker.xcodeproj -scheme "BiometricLocker" -destination 'platform=iOS Simulator,name=iPhone 7' | xcpretty --color && exit ${PIPESTATUS[0]}
+          command: set -o pipefail && xcodebuild clean build test -project BiometricLocker.xcodeproj -scheme "BiometricLockerTests" -destination 'platform=iOS Simulator,name=iPhone 7' | xcpretty --color && exit ${PIPESTATUS[0]}
 
