@@ -15,8 +15,6 @@ public protocol AuthenticationDelegate: class {
     func didFailAuthentication(error: LAError)
 }
 
-private var _singletonHolder: BiometricLocker?
-
 final public class BiometricLocker {
     /// Defines the behaviour of the `lock` function.
     ///
@@ -117,8 +115,6 @@ final public class BiometricLocker {
                 self.lock(.now)
             }
         }
-
-        _singletonHolder = self
     }
 
     /**
