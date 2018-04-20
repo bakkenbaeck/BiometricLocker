@@ -15,6 +15,8 @@ public protocol AuthenticationDelegate: class {
     func didFailAuthentication(error: LAError)
 }
 
+private var _singletonHolder: BiometricLocker?
+
 final public class BiometricLocker {
     /// Defines the behaviour of the `lock` function.
     ///
@@ -99,31 +101,24 @@ final public class BiometricLocker {
         return false
     }
 
-    /// Store the NotificationCenter observers for deallocation.
-    private var notificationObservers = [NSObjectProtocol]()
-
     public init(localizedReason: String, automaticallyLocksOnBackgroundOrQuit: Bool = true, withUnlockedTimeAllowance timeAllowance: TimeInterval = LATouchIDAuthenticationMaximumAllowableReuseDuration) {
         self.localizedReason = localizedReason
         
         self.unlockedTimeAllowance = timeAllowance
 
         if automaticallyLocksOnBackgroundOrQuit {
-            self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) { _ in
+            NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) { _ in
                 // If app goes into background, we start the clocks to lock the app.
                 self.lock()
-            })
+            }
 
-            self.notificationObservers.append(NotificationCenter.default.addObserver(forName: .UIApplicationWillTerminate, object: nil, queue: .main) { _ in
+            NotificationCenter.default.addObserver(forName: .UIApplicationWillTerminate, object: nil, queue: .main) { _ in
                 // If the app is killed, lock it instantly.
                 self.lock(.now)
-            })
+            }
         }
-    }
 
-    deinit {
-        self.notificationObservers.forEach { observer in
-            NotificationCenter.default.removeObserver(observer)
-        }
+        _singletonHolder = self
     }
 
     /**

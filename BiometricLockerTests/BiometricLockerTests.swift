@@ -49,22 +49,14 @@ class BiometricLockerTests: XCTestCase {
     }
 
     func testLockingAfterTimeAllowance() {
-        let locker = BiometricLocker(localizedReason: "")
-        XCTAssertFalse(locker.isLocked)
         let expectation = self.expectation(description: "Allowance time lock")
 
-        locker.lock(.now)
-        XCTAssertTrue(locker.isLocked)
-
-        locker.unlock()
+        let locker = BiometricLocker(localizedReason: "", withUnlockedTimeAllowance: 3)
+        locker.lock(.afterTimeAllowance)
         XCTAssertFalse(locker.isLocked)
 
-        let otherLocker = BiometricLocker(localizedReason: "", withUnlockedTimeAllowance: 3)
-        otherLocker.lock(.afterTimeAllowance)
-        XCTAssertFalse(otherLocker.isLocked)
-
         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-            XCTAssertTrue(otherLocker.isLocked)
+            XCTAssertTrue(locker.isLocked)
             expectation.fulfill()
         }
 
