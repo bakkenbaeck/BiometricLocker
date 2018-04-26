@@ -37,7 +37,7 @@ class BiometricLockerTests: XCTestCase {
         self.wait(for: [expectation], timeout: 5)
     }
 
-    func testLockUnlockImmediatelly() {
+    func testLockUnlockImmediately() {
         let locker = BiometricLocker(localizedReason: "")
         XCTAssertFalse(locker.isLocked)
 
@@ -87,26 +87,19 @@ class BiometricLockerTests: XCTestCase {
     }
 
     func testLockingAfterCustomInterval() {
-        let locker = BiometricLocker(localizedReason: "")
-        XCTAssertFalse(locker.isLocked)
         let expectation = self.expectation(description: "Custom time lock")
 
-        locker.lock(.now)
-        XCTAssertTrue(locker.isLocked)
-
-        locker.unlock()
+        // We set the time a specific allowance, just to be sure that it's being ignored!
+        let locker = BiometricLocker(localizedReason: "", withUnlockedTimeAllowance: 3)
+        XCTAssertFalse(locker.isLocked)
+        locker.lock(.afterTimeInterval(8))
         XCTAssertFalse(locker.isLocked)
 
-        // We set the time a specific allowance, just to be sure that it's being ignored!
-        let otherLocker = BiometricLocker(localizedReason: "", withUnlockedTimeAllowance: 3)
-        otherLocker.lock(.afterTimeInterval(8))
-        XCTAssertFalse(otherLocker.isLocked)
-
         DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
-            XCTAssertFalse(otherLocker.isLocked)
+            XCTAssertFalse(locker.isLocked)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                XCTAssertTrue(otherLocker.isLocked)
+                XCTAssertTrue(locker.isLocked)
                 expectation.fulfill()
             }
         }
