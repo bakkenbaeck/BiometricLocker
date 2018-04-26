@@ -15,7 +15,7 @@ public protocol AuthenticationDelegate: class {
     func didFailAuthentication(error: LAError)
 }
 
-final public class BiometricLocker {
+public final class BiometricLocker {
     /// Defines the behaviour of the `lock` function.
     ///
     /// - now: sets the app as locked immediatelly.
@@ -58,7 +58,7 @@ final public class BiometricLocker {
 
     /// Should be set to `self.newContext()`, to ensure we're using the correct configurations.
     private lazy var _authenticationContext: LAContext = {
-        return self.newContext()
+        self.newContext()
     }()
 
     private var defaults = UserDefaults.standard
@@ -101,7 +101,7 @@ final public class BiometricLocker {
 
     public init(localizedReason: String, automaticallyLocksOnBackgroundOrQuit: Bool = true, withUnlockedTimeAllowance timeAllowance: TimeInterval = LATouchIDAuthenticationMaximumAllowableReuseDuration) {
         self.localizedReason = localizedReason
-        
+
         self.unlockedTimeAllowance = timeAllowance
 
         if automaticallyLocksOnBackgroundOrQuit {
@@ -135,7 +135,7 @@ final public class BiometricLocker {
         case .afterTimeInterval(let interval):
             // We subtract our `unlockedTimeAllowance` here, to offset when checking again
             // inside `isLocked`, otherwise it would be up to the user to know how we implement this internally
-            // and manually calculate the time difference. 
+            // and manually calculate the time difference.
             date = Date(timeIntervalSinceNow: (interval - self.unlockedTimeAllowance))
         }
 
@@ -151,7 +151,6 @@ final public class BiometricLocker {
     }
 
     /// Requests that the user authenticate with biometrics. Feel free to allow a fallback, like a pincode or password screen.
-
     public func authenticateWithBiometrics() {
         var error: NSError?
         guard self.authenticationContext.canEvaluatePolicy(self.policy, error: &error) else {
