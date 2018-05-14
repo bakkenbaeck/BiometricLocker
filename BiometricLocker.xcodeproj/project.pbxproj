@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F42E7F620A9B1B900D5CDF3 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F42E7F520A9B1B900D5CDF3 /* LocalAuthentication.framework */; };
 		9FAE072220849AF70018B8E8 /* BiometricLocker.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FAE072020849AF70018B8E8 /* BiometricLocker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9FAE072920849B0A0018B8E8 /* BiometricLocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAE072820849B0A0018B8E8 /* BiometricLocker.swift */; };
 		9FAE07312084A4E80018B8E8 /* BiometricLockerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAE07302084A4E80018B8E8 /* BiometricLockerTests.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9F42E7F520A9B1B900D5CDF3 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		9FAE071D20849AF70018B8E8 /* BiometricLocker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BiometricLocker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FAE072020849AF70018B8E8 /* BiometricLocker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiometricLocker.h; sourceTree = "<group>"; };
 		9FAE072120849AF70018B8E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -38,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F42E7F620A9B1B900D5CDF3 /* LocalAuthentication.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,12 +55,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9F42E7F420A9B1B900D5CDF3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9F42E7F520A9B1B900D5CDF3 /* LocalAuthentication.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9FAE071320849AF70018B8E8 = {
 			isa = PBXGroup;
 			children = (
 				9FAE071F20849AF70018B8E8 /* BiometricLocker */,
 				9FAE072F2084A4E80018B8E8 /* BiometricLockerTests */,
 				9FAE071E20849AF70018B8E8 /* Products */,
+				9F42E7F420A9B1B900D5CDF3 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
