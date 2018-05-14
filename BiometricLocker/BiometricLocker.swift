@@ -191,7 +191,6 @@ public final class BiometricLocker {
                 } else {
                     strongSelf.negativeFeedbackGenerator.impactOccurred()
 
-
                     guard let error = (error as? LocalAuthentication.LAError) else { return }
                     switch error.code {
                     case .userFallback:

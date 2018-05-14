@@ -6,9 +6,9 @@
 //  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
-import XCTest
-import LocalAuthentication
 @testable import BiometricLocker
+import LocalAuthentication
+import XCTest
 
 class BiometricLockerTests: XCTestCase {
 
@@ -75,12 +75,12 @@ class BiometricLockerTests: XCTestCase {
             // as we've defined a custom time interval when locking.
             XCTAssertFalse(locker.isLocked)
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 // After a total of 6s, the locker should be locked, according to our custom time interval.
                 XCTAssertTrue(locker.isLocked)
 
                 expectation.fulfill()
-            })
+            }
         }
 
         self.wait(for: [expectation], timeout: 7)
