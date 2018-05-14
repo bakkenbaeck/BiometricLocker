@@ -161,6 +161,18 @@ public final class BiometricLocker {
         UserDefaults.standard.removeObject(forKey: Key.applicationDidEnterBackgroundDate.rawValue)
     }
 
+    /// Preflights an authentication policy to see if it is possible for authentication to succeed.
+    ///
+    /// - Parameters:
+    ///   - policy: The policy to evaluate. For possible values, see [LAPolicy](https://developer.apple.com/documentation/localauthentication/lapolicy).
+    ///   - error: If an error occurs, upon return contains an NSError object containing the error information. See LAError.Code for possible error codes.
+    ///
+    /// You may specify nil for this parameter if you do not want the error information.
+    /// - Returns: true if the policy can be evaluated, otherwise false.
+    public func canEvaluatePolicy(_ policy: LAPolicy, error: NSErrorPointer) -> Bool {
+        return self.authenticationContext.canEvaluatePolicy(policy, error: error)
+    }
+
     /// Requests that the user authenticate with biometrics. Feel free to allow a fallback, like a pincode or password screen.
     public func authenticateWithBiometrics() {
         var error: NSError?
