@@ -45,6 +45,11 @@ public final class BiometricLocker {
     /// The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user.
     public var localizedReason: String
 
+    @available(iOS 11.0, *)
+    public var biometryType: LABiometryType {
+        return self.authenticationContext.biometryType
+    }
+
     private var authenticationContext: LAContext {
         // Prevents re-using an `LAContext`, once it can no longer evaluate our policy.
         // Just reusing the `LAContext` can cause it to call the success completion block
