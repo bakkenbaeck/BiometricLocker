@@ -99,6 +99,12 @@ public final class BiometricLocker {
         return false
     }
 
+    /// Creates a new BiometricLocker. Use it to track if the app is locked or unlocked. Does not provide UI.
+    ///
+    /// - Parameters:
+    ///   - localizedReason: The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user.
+    ///   - automaticallyLocksOnBackgroundOrQuit: Whether the app should autolock when the user leaves or quits the app. Default is `true`.
+    ///   - timeAllowance: How longer after the user leaves the app / after `lock()` is called, should it autolock. Can't be changed after initialisation. Default is `LATouchIDAuthenticationMaximumAllowableReuseDuration`.
     public init(localizedReason: String, automaticallyLocksOnBackgroundOrQuit: Bool = true, withUnlockedTimeAllowance timeAllowance: TimeInterval = LATouchIDAuthenticationMaximumAllowableReuseDuration) {
         self.localizedReason = localizedReason
 
