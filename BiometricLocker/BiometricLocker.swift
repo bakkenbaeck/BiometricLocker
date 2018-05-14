@@ -168,7 +168,7 @@ public final class BiometricLocker {
                 } else {
                     strongSelf.negativeFeedbackGenerator.impactOccurred()
 
-                    // This should not actually fail. Not sure why the API doesn't simply return it as an `LAError` directly.
+
                     guard let error = (error as? LocalAuthentication.LAError) else { return }
                     switch error.code {
                     case .userFallback:
