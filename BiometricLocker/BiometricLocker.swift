@@ -28,7 +28,7 @@ public final class BiometricLocker {
     }
 
     /// Defines the UserDefaults key we'll use to store the date.
-    private enum Key: String {
+    public enum Key: String {
         case applicationDidEnterBackgroundDate = "com.bakkenbaeck.BiometricLocker.applicationDidEnterBackgroundDate"
     }
 

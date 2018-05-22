@@ -1,5 +1,11 @@
 # BiometricLocker
 
+BiometricLocker helps you handle biometric checks in your application, be it FaceID or TouchID. By abstracting away most of the complications and giving you behaviour for free (like automatically locking the app when going into the background, with a time allowance also possible). 
+
+Keep in mind that the BiometricLocker does not actually lock your app. It does not provide UI, except for the system provided alerts for biometric checks. We provide the backing logic only, that will tell your app whether or not it should be locked.
+
+Also to keep in mind: the biometric locker instance should not be deallocated. It should live for as long as the application live.
+
 ### Example:
 Here's a simple example implementation through the AppDelegate.
 
