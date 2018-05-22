@@ -26,19 +26,13 @@ import BiometricLocker
     guard let locker = Session.current?.locker else { return }
 
     if locker.isLocked {
-      (self.rootNavigationController.topViewController as? RootViewController)?.topViewController.dismiss(animated: false)
-
-      // We add a forced delay here, because of UIKit, even a non-animated dimissal like above takes time.
-      // 0.25 seems to work fine.
-      DispatchQueue.main.asyncAfter(seconds: 0.5) {
-        UIView.transition(with: self.window!, duration: 0.5, options: .transitionFlipFromRight, animations: {
-          let authenticationController = AuthenticationController()
-          // We set the locker delegate here to handle locking/unlocking inside it.
-          locker.delegate = authenticationController
-          authenticationController.delegate = self
-          self.window?.rootViewController = authenticationController
-        }, completion: nil)
-      }
+      UIView.transition(with: self.window!, duration: 0.5, options: .transitionFlipFromRight, animations: {
+        let authenticationController = AuthenticationController()
+        // We set the locker delegate here to handle locking/unlocking inside it.
+        locker.delegate = authenticationController
+        authenticationController.delegate = self
+        self.window?.rootViewController = authenticationController
+      }, completion: nil)
     }
   }
 }
